@@ -1,0 +1,78 @@
+export const RECIPES = [
+  {
+    id: 1, title: "Grilled Salmon Power Bowl", time: "25 min", calories: 520,
+    protein: 48, carbs: 32, fat: 18, tag: "High Protein",
+    emoji: "🐟", color: "from-sky-900 to-sky-800",
+    accentColor: "sky",
+    description: "Pan-seared Atlantic salmon over wild rice with roasted broccolini, edamame, avocado, and a sesame-ginger drizzle.",
+    ingredients: ["200g Atlantic salmon", "¾ cup wild rice", "100g broccolini", "½ cup edamame", "½ avocado", "2 tbsp sesame-ginger sauce", "1 tsp sesame seeds", "1 lime"],
+    difficulty: "Easy",
+  },
+  {
+    id: 2, title: "Turkey & Quinoa Stuffed Peppers", time: "40 min", calories: 445,
+    protein: 38, carbs: 42, fat: 12, tag: "Balanced",
+    emoji: "🫑", color: "from-emerald-900 to-emerald-800",
+    accentColor: "emerald",
+    description: "Bell peppers loaded with lean ground turkey, tri-color quinoa, black beans, corn, and melted pepper jack.",
+    ingredients: ["2 large bell peppers", "200g ground turkey (93% lean)", "½ cup tri-color quinoa", "¼ cup black beans", "¼ cup corn", "50g pepper jack cheese", "1 tsp cumin", "1 tsp smoked paprika"],
+    difficulty: "Medium",
+  },
+  {
+    id: 3, title: "Greek Yogurt Protein Pancakes", time: "15 min", calories: 380,
+    protein: 32, carbs: 44, fat: 8, tag: "High Protein",
+    emoji: "🥞", color: "from-amber-900 to-amber-800",
+    accentColor: "amber",
+    description: "Fluffy stacked pancakes made with Greek yogurt and oat flour. Topped with fresh berries and a drizzle of honey.",
+    ingredients: ["200g Greek yogurt (0%)", "2 eggs", "¾ cup oat flour", "1 tsp baking powder", "1 tbsp honey", "100g mixed berries", "pinch of cinnamon", "½ tsp vanilla"],
+    difficulty: "Easy",
+  },
+  {
+    id: 4, title: "Chicken & Sweet Potato Skillet", time: "30 min", calories: 495,
+    protein: 42, carbs: 38, fat: 14, tag: "High Protein",
+    emoji: "🍗", color: "from-orange-900 to-orange-800",
+    accentColor: "orange",
+    description: "One-pan crispy chicken thighs with roasted sweet potato cubes, spinach, and a garlic-herb butter finish.",
+    ingredients: ["2 chicken thighs (boneless)", "1 medium sweet potato", "2 cups baby spinach", "3 cloves garlic", "1 tbsp olive oil", "1 tbsp butter", "1 tsp rosemary", "salt & pepper"],
+    difficulty: "Easy",
+  },
+  {
+    id: 5, title: "Shrimp Zucchini Noodle Pasta", time: "20 min", calories: 310,
+    protein: 34, carbs: 14, fat: 12, tag: "Low Carb",
+    emoji: "🍤", color: "from-rose-900 to-rose-800",
+    accentColor: "rose",
+    description: "Spiralized zucchini tossed with garlic shrimp, cherry tomatoes, and a light lemon-white wine sauce.",
+    ingredients: ["200g large shrimp", "2 medium zucchinis", "1 cup cherry tomatoes", "4 cloves garlic", "2 tbsp olive oil", "50ml white wine", "1 lemon", "fresh parsley"],
+    difficulty: "Easy",
+  },
+  {
+    id: 6, title: "Beef & Broccoli Stir Fry", time: "22 min", calories: 480,
+    protein: 44, carbs: 28, fat: 16, tag: "High Protein",
+    emoji: "🥩", color: "from-red-900 to-red-800",
+    accentColor: "red",
+    description: "Tender sirloin strips with crispy broccoli florets in a savory brown sauce. Served over cauliflower rice.",
+    ingredients: ["220g beef sirloin", "2 cups broccoli", "1 cup cauliflower rice", "3 tbsp low-sodium soy sauce", "1 tbsp oyster sauce", "2 cloves garlic", "1 tsp ginger", "1 tsp sesame oil"],
+    difficulty: "Medium",
+  },
+  {
+    id: 7, title: "Avocado Tuna Lettuce Wraps", time: "10 min", calories: 290,
+    protein: 29, carbs: 8, fat: 16, tag: "Low Carb",
+    emoji: "🥬", color: "from-lime-900 to-lime-800",
+    accentColor: "lime",
+    description: "Crisp butter lettuce cups filled with seared ahi tuna, mashed avocado, sriracha mayo, and pickled cucumber.",
+    ingredients: ["180g ahi tuna (sashimi grade)", "1 ripe avocado", "4 large butter lettuce leaves", "½ cucumber", "1 tbsp rice vinegar", "2 tbsp sriracha mayo", "1 tsp sesame seeds"],
+    difficulty: "Easy",
+  },
+  {
+    id: 8, title: "Oatmeal Protein Power Bowl", time: "12 min", calories: 420,
+    protein: 28, carbs: 58, fat: 10, tag: "High Carb",
+    emoji: "🫙", color: "from-yellow-900 to-yellow-800",
+    accentColor: "yellow",
+    description: "Creamy steel-cut oats loaded with banana, almond butter, chia seeds, and a scoop of vanilla protein powder.",
+    ingredients: ["½ cup steel-cut oats", "1 scoop vanilla protein", "1 banana", "1 tbsp almond butter", "1 tbsp chia seeds", "250ml almond milk", "1 tsp cinnamon", "drizzle of maple syrup"],
+    difficulty: "Easy",
+  },
+];
+
+export const DAILY = [RECIPES[0], RECIPES[2], RECIPES[4], RECIPES[6], RECIPES[7]];
+export const RECENT = [RECIPES[1], RECIPES[3], RECIPES[5]];
+export const DISCOVER_ALL = [...RECIPES].reverse();
