@@ -1,12 +1,16 @@
 import {
   Zap, TrendingUp, Droplets, Flame,
-  CheckCircle, Heart, Settings, Award, User
+  CheckCircle, Heart, Settings, Award, User, BookOpen
 } from "lucide-react";
 import TagBadge from "./TagBadge";
 import { useAuth } from "../context/AuthContext";
+import RecipeCardVertical from "./RecipeCardVertical";
 
-const ProfileTab = ({ cooked, favorites, macroGoals, setMacroGoals, onFactoryReset, onOpenAuth }) => {
+const ProfileTab = ({ cooked, favorites, macroGoals, setMacroGoals, onFactoryReset, onOpenAuth, onRecipeClick, onFavorite, allRecipes }) => {
   const { currentUser, logout } = useAuth();
+  
+  const cookedRecipes = cooked;
+  const favRecipes = (allRecipes || []).filter(r => favorites.includes(r.id));
   const handleFactoryReset = () => {
     if (window.confirm("Are you sure you want to erase all data? This cannot be undone.")) {
       onFactoryReset && onFactoryReset();
@@ -65,6 +69,53 @@ const ProfileTab = ({ cooked, favorites, macroGoals, setMacroGoals, onFactoryRes
             </button>
           </div>
         )}
+      </div>
+
+      {/* My Kitchen Section */}
+      <div className="px-5 mb-8">
+        <h2 className="text-white text-base font-bold mb-4 flex items-center gap-2">
+          <BookOpen size={16} className="text-emerald-400" />
+          My Kitchen
+        </h2>
+        
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          {/* Cooked */}
+          {cookedRecipes.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
+                <CheckCircle size={12} className="text-emerald-400" /> Cooked History
+              </h3>
+              <div className="space-y-3">
+                {cookedRecipes.map((r, idx) => (
+                  <RecipeCardVertical key={r.cookedItemId || `${r.id}-${idx}`} recipe={r} onClick={onRecipeClick} favorited={favorites.includes(r.id)} onFavorite={onFavorite} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Favorites */}
+          {favRecipes.length > 0 && (
+            <div>
+              <h3 className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Heart size={12} className="text-rose-400" /> Saved Recipes
+              </h3>
+              <div className="space-y-3">
+                {favRecipes.map(r => (
+                  <RecipeCardVertical key={r.id} recipe={r} onClick={onRecipeClick} favorited={favorites.includes(r.id)} onFavorite={onFavorite} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {cookedRecipes.length === 0 && favRecipes.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-4xl mb-3 opacity-50">🍽️</p>
+              <p className="text-zinc-400 font-medium text-sm">Nothing in your kitchen yet.</p>
+              <p className="text-zinc-500 text-xs mt-1">Cook or save meals to view them here.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Edit Goals */}

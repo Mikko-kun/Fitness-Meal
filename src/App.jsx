@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Home, Compass, Clock, User, ShoppingBag, PlusCircle } from "lucide-react";
+import { Home, Compass, User, ShoppingBag, PlusCircle } from "lucide-react";
 import HomeTab from "./components/HomeTab";
 import DiscoverTab from "./components/DiscoverTab";
-import HistoryTab from "./components/HistoryTab";
 import ProfileTab from "./components/ProfileTab";
 import CartTab from "./components/CartTab";
 import CreateTab from "./components/CreateTab";
@@ -119,7 +118,6 @@ export default function App() {
     { id: "home", label: "Home", Icon: Home },
     { id: "discover", label: "Discover", Icon: Compass },
     { id: "create", label: "Create", Icon: PlusCircle },
-    { id: "history", label: "History", Icon: Clock },
     { id: "cart", label: "Cart", Icon: ShoppingBag },
     { id: "profile", label: "Profile", Icon: User },
   ];
@@ -133,9 +131,8 @@ export default function App() {
         {activeTab === "home" && <HomeTab onRecipeClick={setSelectedRecipe} favorites={favorites} onFavorite={toggleFavorite} cooked={cooked} onNavigate={setActiveTab} macroGoals={macroGoals} setMacroGoals={setMacroGoals} onResetDay={resetDay} allRecipes={ALL_RECIPES} />}
         {activeTab === "discover" && <DiscoverTab onRecipeClick={setSelectedRecipe} favorites={favorites} onFavorite={toggleFavorite} hidden={hidden} allRecipes={ALL_RECIPES} />}
         {activeTab === "create" && <CreateTab onSave={(r) => setUserRecipes(prev => [...prev, r])} onNavigate={setActiveTab} />}
-        {activeTab === "history" && <HistoryTab cooked={cooked} favorites={favorites} onRecipeClick={setSelectedRecipe} onFavorite={toggleFavorite} allRecipes={ALL_RECIPES} />}
         {activeTab === "cart" && <CartTab cart={cart} removeFromCart={removeFromCart} />}
-        {activeTab === "profile" && <ProfileTab cooked={cooked} favorites={favorites} macroGoals={macroGoals} setMacroGoals={setMacroGoals} onFactoryReset={factoryReset} onOpenAuth={() => setIsAuthModalOpen(true)} />}
+        {activeTab === "profile" && <ProfileTab cooked={cooked} favorites={favorites} macroGoals={macroGoals} setMacroGoals={setMacroGoals} onFactoryReset={factoryReset} onOpenAuth={() => setIsAuthModalOpen(true)} onRecipeClick={setSelectedRecipe} onFavorite={toggleFavorite} allRecipes={ALL_RECIPES} />}
       </div>
 
       {/* Bottom Nav */}
