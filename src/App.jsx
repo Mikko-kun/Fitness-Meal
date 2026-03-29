@@ -7,7 +7,11 @@ import ProfileTab from "./components/ProfileTab";
 import CartTab from "./components/CartTab";
 import CreateTab from "./components/CreateTab";
 import RecipeModal from "./components/RecipeModal";
+import GuestBanner from "./components/GuestBanner";
+import AuthModal from "./components/AuthModal";
+import { useAuth } from "./context/AuthContext";
 import { COOKBOOK } from "./data/cookbook";
+import { getUserData, saveUserData } from "./services/db";
 
 const loadFromStorage = (key) => {
   try {
@@ -19,8 +23,10 @@ const loadFromStorage = (key) => {
 };
 
 export default function App() {
+  const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState("home");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [favorites, setFavorites] = useState(() => loadFromStorage("favorites"));
   const [cooked, setCooked] = useState(() => loadFromStorage("cooked"));
   const [hidden, setHidden] = useState(() => loadFromStorage("hidden"));
@@ -31,12 +37,51 @@ export default function App() {
     return stored ? JSON.parse(stored) : { calories: 2100, protein: 150, carbs: 200, fat: 70 };
   });
 
-  useEffect(() => localStorage.setItem("favorites", JSON.stringify(favorites)), [favorites]);
-  useEffect(() => localStorage.setItem("cooked", JSON.stringify(cooked)), [cooked]);
-  useEffect(() => localStorage.setItem("hidden", JSON.stringify(hidden)), [hidden]);
-  useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart]);
-  useEffect(() => localStorage.setItem("macroGoals", JSON.stringify(macroGoals)), [macroGoals]);
-  useEffect(() => localStorage.setItem("userRecipes", JSON.stringify(userRecipes)), [userRecipes]);
+  const [isHydrating, setIsHydrating] = useState(false);
+  const [previousUser, setPreviousUser] = useState(currentUser);
+
+  // Cloud Migration & Logout reset
+  useEffect(() => {
+    // Logout detection
+    if (previousUser && !currentUser) {
+      factoryReset();
+    }
+    setPreviousUser(currentUser);
+
+    // Login Hydration
+    if (currentUser) {
+      setIsHydrating(true);
+      getUserData(currentUser.uid).then(data => {
+        if (data && Object.keys(data).length > 0) {
+          if (data.macroGoals) setMacroGoals(data.macroGoals);
+          if (data.favorites) setFavorites(data.favorites);
+          if (data.cooked) setCooked(data.cooked);
+          if (data.hidden) setHidden(data.hidden);
+          if (data.cart) setCart(data.cart);
+          if (data.userRecipes) setUserRecipes(data.userRecipes);
+        } else {
+          // New account migration
+          saveUserData(currentUser.uid, { macroGoals, favorites, cooked, hidden, cart, userRecipes });
+        }
+      }).finally(() => {
+        setTimeout(() => setIsHydrating(false), 200);
+      });
+    }
+  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Combined Live Sync & Local Persistence
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    localStorage.setItem("cooked", JSON.stringify(cooked));
+    localStorage.setItem("hidden", JSON.stringify(hidden));
+    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("macroGoals", JSON.stringify(macroGoals));
+    localStorage.setItem("userRecipes", JSON.stringify(userRecipes));
+
+    if (currentUser && !isHydrating) {
+      saveUserData(currentUser.uid, { favorites, cooked, hidden, cart, macroGoals, userRecipes });
+    }
+  }, [favorites, cooked, hidden, cart, macroGoals, userRecipes, currentUser, isHydrating]);
 
   const ALL_RECIPES = [...COOKBOOK, ...userRecipes];
 
@@ -90,7 +135,7 @@ export default function App() {
         {activeTab === "create" && <CreateTab onSave={(r) => setUserRecipes(prev => [...prev, r])} onNavigate={setActiveTab} />}
         {activeTab === "history" && <HistoryTab cooked={cooked} favorites={favorites} onRecipeClick={setSelectedRecipe} onFavorite={toggleFavorite} allRecipes={ALL_RECIPES} />}
         {activeTab === "cart" && <CartTab cart={cart} removeFromCart={removeFromCart} />}
-        {activeTab === "profile" && <ProfileTab cooked={cooked} favorites={favorites} macroGoals={macroGoals} setMacroGoals={setMacroGoals} onFactoryReset={factoryReset} />}
+        {activeTab === "profile" && <ProfileTab cooked={cooked} favorites={favorites} macroGoals={macroGoals} setMacroGoals={setMacroGoals} onFactoryReset={factoryReset} onOpenAuth={() => setIsAuthModalOpen(true)} />}
       </div>
 
       {/* Bottom Nav */}
@@ -137,6 +182,10 @@ export default function App() {
           setMacroGoals={setMacroGoals}
         />
       )}
+
+      {/* Auth UI */}
+      {!currentUser && <GuestBanner onSignUp={() => setIsAuthModalOpen(true)} />}
+      {isAuthModalOpen && <AuthModal onClose={() => setIsAuthModalOpen(false)} />}
     </div>
   );
 }

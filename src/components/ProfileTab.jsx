@@ -1,10 +1,12 @@
 import {
   Zap, TrendingUp, Droplets, Flame,
-  CheckCircle, Heart, Settings, Award,
+  CheckCircle, Heart, Settings, Award, User
 } from "lucide-react";
 import TagBadge from "./TagBadge";
+import { useAuth } from "../context/AuthContext";
 
-const ProfileTab = ({ cooked, favorites, macroGoals, setMacroGoals, onFactoryReset }) => {
+const ProfileTab = ({ cooked, favorites, macroGoals, setMacroGoals, onFactoryReset, onOpenAuth }) => {
+  const { currentUser, logout } = useAuth();
   const handleFactoryReset = () => {
     if (window.confirm("Are you sure you want to erase all data? This cannot be undone.")) {
       onFactoryReset && onFactoryReset();
@@ -34,18 +36,35 @@ const ProfileTab = ({ cooked, favorites, macroGoals, setMacroGoals, onFactoryRes
 
       {/* Avatar card */}
       <div className="px-5 mb-5">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-2xl font-bold text-white shrink-0">
-            JD
-          </div>
-          <div>
-            <p className="text-white font-bold text-lg">Jamie D.</p>
-            <p className="text-emerald-400 text-sm font-semibold">{macroGoals?.calories || 2100} kcal daily goal</p>
-            <div className="flex gap-1.5 mt-1.5 flex-wrap">
-              {prefs.map(p => <TagBadge key={p} tag={p.includes("Protein") ? "High Protein" : p.includes("Carb") ? "Low Carb" : "Balanced"} />)}
+        {currentUser ? (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex items-center gap-4 relative">
+            <button onClick={logout} className="absolute top-4 right-4 text-[10px] text-zinc-500 hover:text-rose-400 uppercase tracking-widest font-bold transition-colors">Log out</button>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-2xl font-bold text-white shrink-0">
+              {currentUser.email?.substring(0, 2).toUpperCase() || "ME"}
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg truncate max-w-[180px]">{currentUser.email?.split('@')[0]}</p>
+              <p className="text-emerald-400 text-sm font-semibold">{macroGoals?.calories || 2100} kcal daily goal</p>
+              <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                {prefs.map(p => <TagBadge key={p} tag={p.includes("Protein") ? "High Protein" : p.includes("Carb") ? "Low Carb" : "Balanced"} />)}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-zinc-800 border-[3px] border-zinc-700 flex items-center justify-center text-zinc-500 mb-3">
+              <User size={28} />
+            </div>
+            <p className="text-white font-bold text-lg mb-1">Guest Profile</p>
+            <p className="text-zinc-400 text-xs mb-5">Your data is saved locally on this device. Sign up to sync your custom macros and plans anywhere.</p>
+            <button 
+              onClick={onOpenAuth}
+              className="bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-3 px-8 rounded-xl transition-all shadow-lg shadow-emerald-500/20 w-full active:scale-95"
+            >
+              Log In / Sign Up
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Edit Goals */}
