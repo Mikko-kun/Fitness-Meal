@@ -1,0 +1,6 @@
+{
+  "appId": "com.macroplanner.app",
+  "appName": "Macro Planner",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
